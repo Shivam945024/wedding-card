@@ -1,251 +1,103 @@
 
-import os
-import io
-import textwrap
-import streamlit as st
-from PIL import Image, ImageDraw, ImageFont
-from openai import OpenAI
-
-st.set_page_config(
-    page_title="AI Wedding Invitation Maker",
-    page_icon="💍",
-    layout="centered"
-)
-
-st.title("💍 AI Wedding Invitation Maker")
-st.write("Create a personalized invitation for your special day.")
-
-religion = st.selectbox(
-    "Select Religion",
-    ["Hindu", "Muslim", "Christian", "Sikh",
-     "Jain", "Buddhist", "Other"]
-)
-
-language = st.selectbox(
-    "Select Language",
-    ["English", "Hindi"]
-)
-
-style = st.selectbox(
-    "Card Style",
-    ["Royal Red & Gold", "Elegant Green",
-     "Classic White", "Royal Purple"]
-)
-
-bride = st.text_input("Bride's Name")
-groom = st.text_input("Groom's Name")
-family = st.text_input("Family Names")
-date = st.date_input("Wedding Date")
-time = st.text_input("Wedding Time", "7:00 PM")
-venue = st.text_input("Wedding Venue")
-message = st.text_area("Additional Message (Optional)")
-
 def create_invitation():
     templates = {
-        "Hindu": (
-            "॥ श्री गणेशाय नमः ॥\n"
-            "सादर आमंत्रण\n"
-            "शुभ विवाह\n"
-            f"{groom} एवं {bride}\n"
-            "आप सपरिवार सादर आमंत्रित हैं।"
-            if language == "Hindi"
-            else
-            "॥ Shri Ganeshaya Namah ॥\n"
-            "Wedding Invitation\n"
-            f"{groom} & {bride}\n"
-            "Request the pleasure of your presence."
-        ),
-        "Muslim": (
-            "निकाह का निमंत्रण\n"
-            f"{groom} एवं {bride}\n"
-            "आपकी उपस्थिति सादर प्रार्थनीय है।"
-            if language == "Hindi"
-            else
-            "Nikah Invitation\n"
-            f"{groom} & {bride}\n"
-            "Together with their families, "
-            "invite you to celebrate their Nikah."
-        ),
-        "Christian": (
-            "विवाह समारोह का निमंत्रण\n"
-            f"{groom} एवं {bride}"
-            if language == "Hindi"
-            else
-            "Wedding Invitation\n"
-            f"{groom} & {bride}\n"
-            "Joyfully invite you to celebrate "
-            "their wedding."
-        ),
-        "Sikh": (
-            "आनंद कारज का निमंत्रण\n"
-            f"{groom} एवं {bride}"
-            if language == "Hindi"
-            else
-            "Anand Karaj Invitation\n"
-            f"{groom} & {bride}\n"
-            "With our families, we invite you "
-            "to our wedding celebration."
-        ),
-        "Jain": (
-            "शुभ विवाह का निमंत्रण\n"
-            f"{groom} एवं {bride}"
-            if language == "Hindi"
-            else
-            "Wedding Invitation\n"
-            f"{groom} & {bride}\n"
-            "Please join us for our wedding."
-        ),
-        "Buddhist": (
-            "विवाह समारोह का निमंत्रण\n"
-            f"{groom} एवं {bride}"
-            if language == "Hindi"
-            else
-            "Wedding Invitation\n"
-            f"{groom} & {bride}\n"
-            "We warmly invite you to celebrate "
-            "our special day."
-        ),
-        "Other": (
-            "विवाह समारोह का निमंत्रण\n"
-            f"{groom} एवं {bride}"
-            if language == "Hindi"
-            else
-            "Wedding Invitation\n"
-            f"{groom} & {bride}\n"
-            "You are warmly invited to celebrate "
-            "our special day."
-        )
-    }
-
-    default_text = templates[religion]
-
-    api_key = os.getenv("AQ.Ab8RN6IyugJceYwO-sa7E3aZi5UC6vf5kF5_hVVGcOgbgkxBvw")
-
-    if not api_key:
-        return default_text
-
-    try:
-        client = OpenAI(api_key=api_key)
-
-        response = client.responses.create(
-            model="gpt-4.1-mini",
-            input=(
-                "Write tasteful wedding invitation wording. "
-                "Respect the selected religion and its traditions. "
-                "Do not invent religious quotations or rituals. "
-                "Use only the supplied event details. "
-                "Return plain text, no markdown.\n"
-                f"Religion: {religion}\n"
-                f"Language: {language}\n"
-                f"Style: {style}\n"
-                f"Bride: {bride}\n"
-                f"Groom: {groom}\n"
-                f"Families: {family}\n"
-                f"Date: {date}\n"
-                f"Time: {time}\n"
-                f"Venue: {venue}\n"
-                f"Extra message: {message}\n"
-                f"Example wording: {default_text}"
+        "Hindu": {
+            "Hindi": (
+                "॥ श्री गणेशाय नमः ॥\n"
+                "सादर आमंत्रण\n"
+                "शुभ विवाह\n"
+                f"{groom} एवं {bride}\n"
+                "आप सपरिवार सादर आमंत्रित हैं।"
+            ),
+            "English": (
+                "Shri Ganeshaya Namah\n"
+                "Wedding Invitation\n"
+                f"{groom} & {bride}\n"
+                "Request the pleasure of your presence."
             )
-        )
-
-        return response.output_text.strip()
-
-    except Exception:
-        st.warning(
-            "AI service unavailable. Using the default wording."
-        )
-        return default_text
-
-
-def make_card(invitation):
-    colors = {
-        "Royal Red & Gold": ("#720D24", "#E8C878"),
-        "Elegant Green": ("#064E3B", "#D9C17A"),
-        "Classic White": ("#FFFCF4", "#A98746"),
-        "Royal Purple": ("#39224F", "#E3C779")
+        },
+        "Muslim": {
+            "Hindi": (
+                "निकाह का निमंत्रण\n"
+                f"{groom} एवं {bride}\n"
+                "आपकी उपस्थिति सादर प्रार्थनीय है।"
+            ),
+            "English": (
+                "Nikah Invitation\n"
+                f"{groom} & {bride}\n"
+                "Together with their families, "
+                "invite you to celebrate their Nikah."
+            )
+        },
+        "Christian": {
+            "Hindi": (
+                "विवाह समारोह का निमंत्रण\n"
+                f"{groom} एवं {bride}"
+            ),
+            "English": (
+                "Wedding Invitation\n"
+                f"{groom} & {bride}\n"
+                "Joyfully invite you to celebrate their wedding."
+            )
+        },
+        "Sikh": {
+            "Hindi": (
+                "आनंद कारज का निमंत्रण\n"
+                f"{groom} एवं {bride}"
+            ),
+            "English": (
+                "Anand Karaj Invitation\n"
+                f"{groom} & {bride}\n"
+                "With our families, we invite you to our wedding."
+            )
+        },
+        "Jain": {
+            "Hindi": (
+                "शुभ विवाह का निमंत्रण\n"
+                f"{groom} एवं {bride}"
+            ),
+            "English": (
+                "Wedding Invitation\n"
+                f"{groom} & {bride}\n"
+                "Please join us for our wedding."
+            )
+        },
+        "Buddhist": {
+            "Hindi": (
+                "विवाह समारोह का निमंत्रण\n"
+                f"{groom} एवं {bride}"
+            ),
+            "English": (
+                "Wedding Invitation\n"
+                f"{groom} & {bride}\n"
+                "We warmly invite you to celebrate our special day."
+            )
+        },
+        "Other": {
+            "Hindi": (
+                "विवाह समारोह का निमंत्रण\n"
+                f"{groom} एवं {bride}"
+            ),
+            "English": (
+                "Wedding Invitation\n"
+                f"{groom} & {bride}\n"
+                "You are warmly invited to celebrate our special day."
+            )
+        }
     }
 
-    bg, gold = colors[style]
+    invitation = templates[religion][language]
 
-    img = Image.new("RGB", (900, 1200), bg)
-    draw = ImageDraw.Draw(img)
+    if family.strip():
+        invitation += f"\nWith love from {family}"
 
-    draw.rectangle(
-        (28, 28, 872, 1172),
-        outline=gold,
-        width=5
-    )
-    draw.rectangle(
-        (45, 45, 855, 1155),
-        outline=gold,
-        width=2
+    invitation += (
+        f"\nDate: {date.strftime('%d-%m-%Y')}"
+        f"\nTime: {time}"
+        f"\nVenue: {venue}"
     )
 
-    try:
-        font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"
-        title_font = ImageFont.truetype(font_path, 43)
-        body_font = ImageFont.truetype(font_path, 28)
-        small_font = ImageFont.truetype(font_path, 25)
-    except OSError:
-        title_font = ImageFont.load_default()
-        body_font = ImageFont.load_default()
-        small_font = ImageFont.load_default()
+    if message.strip():
+        invitation += f"\n{message}"
 
-    def centered(text, y, font, fill=gold):
-        box = draw.textbbox((0, 0), text, font=font)
-        width = box[2] - box[0]
-        draw.text(((900 - width) / 2, y), text,
-                  font=font, fill=fill)
-
-    centered("YOU ARE INVITED", 100, title_font)
-
-    y = 220
-    for line in invitation.splitlines():
-        for wrapped in textwrap.wrap(line, width=32) or [""]:
-            centered(wrapped, y, body_font)
-            y += 48
-
-    y = max(y + 20, 650)
-    centered(f"Date: {date}", y, small_font)
-    centered(f"Time: {time}", y + 55, small_font)
-
-    venue_lines = textwrap.wrap(f"Venue: {venue}", width=35)
-    for i, line in enumerate(venue_lines):
-        centered(line, y + 110 + i * 40, small_font)
-
-    if family:
-        centered("With love from", 930, small_font)
-        for i, line in enumerate(textwrap.wrap(family, 32)):
-            centered(line, 975 + i * 40, small_font)
-
-    if message:
-        for i, line in enumerate(textwrap.wrap(message, 35)):
-            centered(line, 1070 + i * 35, small_font)
-
-    return img
-
-
-if st.button("✨ Generate AI Invitation", type="primary"):
-    if not bride.strip() or not groom.strip() or not venue.strip():
-        st.error("Please enter the bride, groom and venue.")
-    else:
-        with st.spinner("Creating your invitation..."):
-            wording = create_invitation()
-            card = make_card(wording)
-
-        st.subheader("Invitation Preview")
-        st.image(card, use_container_width=True)
-
-        st.subheader("Invitation Text")
-        st.text(wording)
-
-        output = io.BytesIO()
-        card.save(output, format="PNG")
-
-        st.download_button(
-            "⬇️ Download Invitation Card",
-            data=output.getvalue(),
-            file_name="wedding_invitation.png",
-            mime="image/png"
-        )
+    return invitation
