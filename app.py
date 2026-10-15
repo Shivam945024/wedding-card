@@ -41,7 +41,7 @@ if submitted:
         st.warning("Please fill in all fields.")
     else:
         api_key = st.secrets.get(
-            "GEMINI_API_KEY",
+            "AQ.Ab8RN6IyugJceYwO-sa7E3aZi5UC6vf5kF5_hVVGcOgbgkxBvw",
             os.getenv("GEMINI_API_KEY", "")
         )
 
