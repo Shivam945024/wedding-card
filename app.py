@@ -6,7 +6,7 @@ from pathlib import Path
 
 import streamlit as st
 from PIL import Image, ImageDraw, ImageFont
-from openai import OpenAI
+
 
 
 # ---------------- PAGE CONFIG ----------------
